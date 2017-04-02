@@ -62,4 +62,3 @@ def list_mutual_friends_request(req_dict, friends):
             mutual_list.append(i)
 
     return {"success": True, "friends": mutual_list, "count": len(mutual_list)}
-
