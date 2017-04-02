@@ -78,8 +78,8 @@ def list_mutual_friends_request(req_dict, friends):
 
 def sub_updates_request(req_dict, get_updates, block):
     """Allows user to receive updates from target"""
-    target = req_dict["friends"].pop()
-    req = req_dict["friends"].pop()
+    target = req_dict["target"]
+    req = req_dict["requestor"]
 
     #check if keys exist in updates dict
     if not get_updates.has_key(req):

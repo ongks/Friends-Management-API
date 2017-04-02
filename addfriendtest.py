@@ -31,6 +31,7 @@ class AddFriendsTest(unittest.TestCase):
             'john@example.com': ["andy@example.com"]
         }
 
+
     #wrong json format
     def test_wrong_json_format(self):
         wrong_json = { "invalid json" }
