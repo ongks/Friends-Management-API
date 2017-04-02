@@ -44,3 +44,22 @@ def list_friends_request(req_dict, friends):
     list_of_friends = friends[email]
 
     return {"success": True, "friends": list_of_friends, "count": len(list_of_friends)}
+
+def list_mutual_friends_request(req_dict, friends):
+    """List all mutual friends between the two users specified"""
+    email1 = req_dict["friends"].pop()
+    email0 = req_dict["friends"].pop()
+
+    #check if keys exist in friends dict
+    if not friends.has_key(email0):
+        friends[email0] = []
+    if not friends.has_key(email1):
+        friends[email1] = []
+
+    mutual_list = []
+    for i in friends[email0]:
+        if i in friends[email1]:
+            mutual_list.append(i)
+
+    return {"success": True, "friends": mutual_list, "count": len(mutual_list)}
+
