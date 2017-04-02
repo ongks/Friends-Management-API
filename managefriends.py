@@ -1,3 +1,6 @@
+import re
+
+
 def add_friend_request(req_dict, friends, get_updates, block):
     """Establishes friend connection between the two specified emails;
     friends will also automatically subscribe updates to one another"""
@@ -46,6 +49,8 @@ def add_friend_request(req_dict, friends, get_updates, block):
 
     return {"success": True}
 
+
+
 def list_friends_request(req_dict, friends):
     """List all friends of the user with the specified email"""
     email = req_dict["email"]
@@ -57,6 +62,8 @@ def list_friends_request(req_dict, friends):
     list_of_friends = friends[email]
 
     return {"success": True, "friends": list_of_friends, "count": len(list_of_friends)}
+
+
 
 def list_mutual_friends_request(req_dict, friends):
     """List all mutual friends between the two users specified"""
@@ -75,6 +82,8 @@ def list_mutual_friends_request(req_dict, friends):
             mutual_list.append(i)
 
     return {"success": True, "friends": mutual_list, "count": len(mutual_list)}
+
+
 
 def sub_updates_request(req_dict, get_updates, block):
     """Allows user to receive updates from target"""
@@ -100,6 +109,8 @@ def sub_updates_request(req_dict, get_updates, block):
         get_updates[req].append(target)
         return {"success": True}
 
+
+
 def block_updates_request(req_dict, get_updates, block):
     """Allows user to block updates from target"""
     target = req_dict["target"]
@@ -123,3 +134,28 @@ def block_updates_request(req_dict, get_updates, block):
         block[req].append(target)
         return {"success": True}
 
+
+
+def list_recipients_request(req_dict, friends, get_updates, block):
+    """returns a list of recipients who will receive updates from the sender"""
+    sender = req_dict["sender"]
+    text = req_dict["text"]
+
+    if not friends.has_key(sender):
+        friends[sender] = []
+
+    friend_list = friends[sender]
+    updates_list = []
+    for i in get_updates:
+        if sender in get_updates[i]:
+            updates_list.append(i)
+
+    combined_list = friend_list + list(set(updates_list) - set(friend_list))
+
+    #find emails in the text
+    pattern = "^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+    matched_list = re.findall(pattern, text)
+
+    final_recipient_list = combined_list + list(set(matched_list) - set(combined_list))
+
+    return {"success": True, "recipients": final_recipient_list}
