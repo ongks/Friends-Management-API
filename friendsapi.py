@@ -1,4 +1,8 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
+from jsonschema import ValidationError
+from managefriends import add_friend_request
+from data import friends, block
+import schemas
 
 
 app = Flask(__name__)
@@ -6,7 +10,12 @@ app = Flask(__name__)
 @app.route('/api/v0/addfriendrequest', methods=['GET', 'POST'])
 def add_friend_request():
     json_req = request.json
-    return 'Hello World!'
+    try:
+        schemas.validate_friends_pair(json_req)
+        json_resp = add_friend_request(json_req, friends, block)
+        return jsonify(json_resp)
+    except ValidationError:
+        return jsonify({"success": False, "message": "Invalid JSON request."})
 
 if __name__ == '__main__':
     app.run()
