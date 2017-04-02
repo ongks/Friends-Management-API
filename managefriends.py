@@ -62,3 +62,27 @@ def list_mutual_friends_request(req_dict, friends):
             mutual_list.append(i)
 
     return {"success": True, "friends": mutual_list, "count": len(mutual_list)}
+
+def sub_updates_request(req_dict, get_updates, block):
+    """Establishes friend connection between the two specified emails"""
+    target = req_dict["friends"].pop()
+    req = req_dict["friends"].pop()
+
+    #check if keys exist in friends dict
+    if not get_updates.has_key(req):
+        get_updates[req] = []
+
+    # check if keys exist in block dict
+    if not block.has_key(req):
+        block[req] = []
+
+    #check if user has blocked requested user, or vice versa
+    if target in block[req]:
+        return {"success": False, "message": "Requested user has been blocked."}
+
+    #check if they are already friends
+    if target in get_updates[req]:
+        return {"success": False, "message": "You are already following this user."}
+    else:
+        get_updates[req].append(target)
+        return {"success": True}
