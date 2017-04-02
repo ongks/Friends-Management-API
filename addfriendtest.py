@@ -18,6 +18,10 @@ class AddFriendsTest(unittest.TestCase):
 
         }
 
+        self.get_updates_empty = {
+
+        }
+
         self.friends_sample_emails = {
             'andy@example.com': ["john@example.com"],
             'john@example.com': ["andy@example.com"]
@@ -50,38 +54,63 @@ class AddFriendsTest(unittest.TestCase):
         with self.assertRaises(ValidationError):
             validate_friends_pair(wrong_json_email)
 
-    #check whether new emails is added
-    def test_successful_add_friends(self):
+
+
+    #check whether new emails are added to the friends and getupdates dict
+    def test_successful_add_friends_to_friends_dict(self):
         json_req = { "friends" : ['andy@example.com', 'john@example.com']}
-        add_friend_request(json_req, self.friends_empty, self.block_empty)
+        add_friend_request(json_req, self.friends_empty, self.get_updates_empty, self.block_empty)
         expected_dict = {'andy@example.com' : ['john@example.com'], 'john@example.com' : ['andy@example.com']}
         self.assertDictEqual(expected_dict, self.friends_empty)
 
+    def test_successful_add_friends_to_getupdates_dict(self):
+        json_req = { "friends" : ['andy@example.com', 'john@example.com']}
+        add_friend_request(json_req, self.friends_empty, self.get_updates_empty, self.block_empty)
+        expected_dict = {'andy@example.com' : ['john@example.com'], 'john@example.com' : ['andy@example.com']}
+        self.assertDictEqual(expected_dict, self.get_updates_empty)
+
     def test_successful_json(self):
         json_req = { "friends" : ['andy@example.com', 'john@example.com']}
-        actual_json = add_friend_request(json_req, self.friends_empty, self.block_empty)
+        actual_json = add_friend_request(json_req, self.friends_empty, self.get_updates_empty, self.block_empty)
         expected_json = {"success": True}
         self.assertEqual(expected_json, actual_json)
 
+
+
     #target is on user's block list
+    def test_friend_list_of_user_still_empty_when_blocked_target(self):
+        json_req = { "friends" : ['andy@example.com', 'john@example.com']}
+        add_friend_request(json_req, self.friends_empty, self.get_updates_empty, self.block_target)
+        expected_dict = {'andy@example.com' : [], 'john@example.com' : []}
+        self.assertDictEqual(expected_dict, self.friends_empty)
+
     def test_user_block_other(self):
         json_req = {"friends": ['andy@example.com', 'john@example.com']}
-        actual_json = add_friend_request(json_req, self.friends_empty, self.block_target)
+        actual_json = add_friend_request(json_req, self.friends_empty, self.get_updates_empty, self.block_target)
         expected_json = {"success": False, "message": "Requested user has been blocked."}
         self.assertEqual(expected_json, actual_json)
 
 
     #user is on target's block list
+    def test_friend_list_of_user_still_empty_when_blocked_by_target(self):
+        json_req = { "friends" : ['andy@example.com', 'john@example.com']}
+        add_friend_request(json_req, self.friends_empty, self.get_updates_empty, self.block_requestor)
+        expected_dict = {'andy@example.com' : [], 'john@example.com' : []}
+        self.assertDictEqual(expected_dict, self.friends_empty)
+
     def test_blocked_by_other_user(self):
         json_req = {"friends": ['andy@example.com', 'john@example.com']}
-        actual_json = add_friend_request(json_req, self.friends_empty, self.block_requestor)
+        actual_json = add_friend_request(json_req, self.friends_empty, self.get_updates_empty, self.block_requestor)
         expected_json = {"success": False, "message": "You are blocked by the other user."}
         self.assertEqual(expected_json, actual_json)
+
+
+
 
     #already friends with each other
     def test_already_friends(self):
         json_req = {"friends": ['andy@example.com', 'john@example.com']}
-        actual_json = add_friend_request(json_req, self.friends_sample_emails, self.block_empty)
+        actual_json = add_friend_request(json_req, self.friends_sample_emails, self.get_updates_empty, self.block_empty)
         expected_json = {"success": False, "message": "You are already friends with the user."}
         self.assertEqual(expected_json, actual_json)
 
