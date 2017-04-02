@@ -6,7 +6,7 @@ import schemas, managefriends
 
 app = Flask(__name__)
 
-@app.route('/api/v0/addfriendrequest', methods=['GET', 'POST'])
+@app.route('/api/v0/addfriend', methods=['GET', 'POST'])
 def add_friend():
     json_req = request.json
     try:
