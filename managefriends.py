@@ -32,3 +32,15 @@ def add_friend_request(req_dict, friends, block):
         friends[email0].append(email1)
 
     return {"success": True}
+
+def list_friends_request(req_dict, friends):
+    """List all friends of the user with the specified email"""
+    email = req_dict["email"]
+
+    #check if the email exists in friends dict
+    if not friends.has_key(email):
+        friends[email] = []
+
+    list_of_friends = friends[email]
+
+    return {"success": True, "friends": list_of_friends, "count": len(list_of_friends)}
