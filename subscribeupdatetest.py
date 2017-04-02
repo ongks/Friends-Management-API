@@ -1,5 +1,5 @@
 """"
-Test cases for add friends function
+Test cases for subscribing to updates function
 """
 
 import unittest
