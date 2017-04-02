@@ -99,3 +99,27 @@ def sub_updates_request(req_dict, get_updates, block):
     else:
         get_updates[req].append(target)
         return {"success": True}
+
+def block_updates_request(req_dict, get_updates, block):
+    """Allows user to block updates from target"""
+    target = req_dict["target"]
+    req = req_dict["requestor"]
+
+    #check if keys exist in updates dict
+    if not get_updates.has_key(req):
+        get_updates[req] = []
+
+    # check if keys exist in block dict
+    if not block.has_key(req):
+        block[req] = []
+
+    #check if user has blocked requested user
+    if target in block[req]:
+        return {"success": False, "message": "You have already blocked this user."}
+    else:
+        # remove target from req's update list
+        if target in get_updates[req]:
+            get_updates[req].remove(target)
+        block[req].append(target)
+        return {"success": True}
+
