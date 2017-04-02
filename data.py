@@ -1,0 +1,15 @@
+friends = {
+
+}
+
+rcvupdates = {
+
+}
+
+getupdates = {
+
+}
+
+block = {
+
+}
