@@ -46,10 +46,15 @@ def sub_updates():
     except ValidationError:
         return jsonify({"success": False, "message": "Invalid JSON request."})
 
-@app.route('/api/v0/BlockUpdates', methods=['GET', 'POST'])
-def blockUpdates():
+@app.route('/api/v0/blockupdates', methods=['GET', 'POST'])
+def block_updates():
     json_req = request.json
-    return 'Hello World!'
+    try:
+        schemas.validate_requestor_target(json_req)
+        json_resp = managefriends.block_updates_request(json_req, get_updates, block)
+        return jsonify(json_resp)
+    except ValidationError:
+        return jsonify({"success": False, "message": "Invalid JSON request."})
 
 @app.route('/api/v0/ListUpdatedEmails', methods=['GET', 'POST'])
 def listUpdatedEmails():
