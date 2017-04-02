@@ -2,13 +2,10 @@ friends = {
 
 }
 
-rcvupdates = {
+get_updates = {
 
 }
 
-getupdates = {
-
-}
 
 block = {
 

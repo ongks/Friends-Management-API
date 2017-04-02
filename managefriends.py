@@ -1,5 +1,6 @@
-def add_friend_request(req_dict, friends, block):
-    """Establishes friend connection between the two specified emails"""
+def add_friend_request(req_dict, friends, get_updates, block):
+    """Establishes friend connection between the two specified emails;
+    friends will also automatically subscribe updates to one another"""
     email1 = req_dict["friends"].pop()
     email0 = req_dict["friends"].pop()
 
@@ -14,6 +15,12 @@ def add_friend_request(req_dict, friends, block):
         block[email0] = []
     if not block.has_key(email1):
         block[email1] = []
+
+    # check if keys exist in updates dict
+    if not get_updates.has_key(email0):
+        get_updates[email0] = []
+    if not get_updates.has_key(email1):
+        get_updates[email1] = []
 
     #check if user has blocked requested user, or vice versa
     if email1 in block[email0]:
@@ -30,6 +37,12 @@ def add_friend_request(req_dict, friends, block):
 
     if not email1 in friends[email0]:
         friends[email0].append(email1)
+
+    if not email0 in get_updates[email1]:
+        get_updates[email1].append(email0)
+
+    if not email1 in get_updates[email0]:
+        get_updates[email0].append(email1)
 
     return {"success": True}
 
@@ -62,3 +75,27 @@ def list_mutual_friends_request(req_dict, friends):
             mutual_list.append(i)
 
     return {"success": True, "friends": mutual_list, "count": len(mutual_list)}
+
+def sub_updates_request(req_dict, get_updates, block):
+    """Allows user to receive updates from target"""
+    target = req_dict["target"]
+    req = req_dict["requestor"]
+
+    #check if keys exist in updates dict
+    if not get_updates.has_key(req):
+        get_updates[req] = []
+
+    # check if keys exist in block dict
+    if not block.has_key(req):
+        block[req] = []
+
+    #check if user has blocked requested user
+    if target in block[req]:
+        return {"success": False, "message": "Requested user has been blocked."}
+
+    #check if user is already following the target
+    if target in get_updates[req]:
+        return {"success": False, "message": "You are already following this user."}
+    else:
+        get_updates[req].append(target)
+        return {"success": True}
