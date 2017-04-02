@@ -245,6 +245,7 @@ It will return following JSON response on failure, in cases of invalid JSON requ
   "success": false
   "message" : "Invalid JSON request.",
 }
+```
 
 ## Remarks
 The API was built using the Flask framework with Python due to the ease of deployment on a local host. While Java was considered as an option, the large number of steps required to deploy it for testing makes it a poor choice for development.
