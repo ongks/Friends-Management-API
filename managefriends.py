@@ -158,4 +158,8 @@ def list_recipients_request(req_dict, friends, get_updates, block):
 
     final_recipient_list = combined_list + list(set(matched_list) - set(combined_list))
 
+    for i in final_recipient_list:
+        if sender in block[i]:
+            final_recipient_list.remove(i)
+
     return {"success": True, "recipients": final_recipient_list}
