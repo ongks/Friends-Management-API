@@ -11,7 +11,7 @@ def add_friend():
     json_req = request.json
     try:
         schemas.validate_friends_pair(json_req)
-        json_resp = managefriends.add_friend_request(json_req, friends, block)
+        json_resp = managefriends.add_friend_request(json_req, friends, get_updates, block)
         return jsonify(json_resp)
     except ValidationError:
         return jsonify({"success": False, "message": "Invalid JSON request."})
